@@ -23,7 +23,9 @@ if (isset($_POST['submit'])) {
     $stok = $_POST['stok'];
 
     $update_barang = mysqli_query($conn, "UPDATE barang SET nama_barang='$nama_barang', harga_jual='$harga_jual' WHERE id_barang=$id_barang");
-    $update_stok = mysqli_query($conn, "UPDATE stoktoko SET jumlah_stok='$stok' WHERE id_toko=$id_toko AND id_barang=$id_barang");
+    $update_stok = mysqli_query($conn, "INSERT INTO stoktoko (id_toko, id_barang, jumlah_stok)
+                                    VALUES ($id_toko, $id_barang, $stok)
+                                    ON DUPLICATE KEY UPDATE jumlah_stok = $stok");
 
     if ($update_barang && $update_stok) {
         header("Location: barang.php");
