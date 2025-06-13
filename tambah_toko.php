@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Proses upload gambar
     $gambar = '';
     if ($_FILES['image']['name']) {
-        $target_dir = "gambar/";
+        $target_dir = "upload/";
         $gambar = basename($_FILES["image"]["name"]);
         $target_file = $target_dir . $gambar;
         $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));

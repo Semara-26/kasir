@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $image_update = ""; // default, tidak update gambar
 
     if ($_FILES['image']['name']) {
-        $target_dir = "gambar/";
+        $target_dir = "upload/";
         $upload_name = basename($_FILES["image"]["name"]);
         $target_file = $target_dir . $upload_name;
         $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
@@ -103,7 +103,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       </div>
       <div class="mb-3">
         <label class="form-label">Gambar Toko Saat Ini</label><br>
-        <img src="gambar/<?= htmlspecialchars($toko['image']) ?>" width="120" alt="gambar toko">
+       <img src="upload/<?= htmlspecialchars($toko['image']) ?>" width="120" alt="gambar toko">
+
       </div>
       <div class="mb-3">
         <label class="form-label">Upload Gambar Baru (opsional)</label>
