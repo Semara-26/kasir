@@ -49,7 +49,7 @@ if (isset($_POST['submit'])) {
     <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
     <?php endif; ?>
 
-    <form method="POST" action="" class="needs-validation" novalidate>
+    <form method="POST" class="needs-validation" novalidate>
         <div class="mb-3">
             <label for="nama_barang" class="form-label">Nama Barang</label>
             <input type="text" class="form-control" id="nama_barang" name="nama_barang" required value="<?= htmlspecialchars($data['nama_barang']) ?>">
@@ -69,4 +69,26 @@ if (isset($_POST['submit'])) {
         </div>
 
         <button type="submit" name="submit" class="btn btn-primary">Update Barang</button>
-        <
+        <a href="barang.php" class="btn btn-secondary ms-2">Batal</a>
+    </form>
+</div>
+
+<script>
+// Bootstrap validation
+(() => {
+  'use strict'
+  const forms = document.querySelectorAll('.needs-validation')
+  Array.from(forms).forEach(form => {
+    form.addEventListener('submit', event => {
+      if (!form.checkValidity()) {
+        event.preventDefault()
+        event.stopPropagation()
+      }
+      form.classList.add('was-validated')
+    }, false)
+  })
+})();
+</script>
+
+</body>
+</html>

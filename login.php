@@ -50,7 +50,26 @@ if (isset($_POST['login'])) {
         input[type="submit"] { width: 100%; padding: 10px; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; }
         .error { color: red; margin: 10px 0; }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
+
+<script>
+function togglePassword() {
+    const passwordInput = document.getElementById("password");
+    const toggleIcon = document.getElementById("togglePassword");
+    
+    if (passwordInput.type === "password") {
+        passwordInput.type = "text";
+        toggleIcon.classList.remove("fa-eye");
+        toggleIcon.classList.add("fa-eye-slash");
+    } else {
+        passwordInput.type = "password";
+        toggleIcon.classList.remove("fa-eye-slash");
+        toggleIcon.classList.add("fa-eye");
+    }
+}
+</script>
+
 <body>
     <div class="login-box">
         <h2>Login POS</h2>
@@ -59,8 +78,13 @@ if (isset($_POST['login'])) {
             <label>Username</label>
             <input type="text" name="username" required />
 
-            <label>Password</label>
-            <input type="password" name="password" required />
+        <label>Password</label>
+            <div style="position: relative;">
+                <input type="password" name="password" id="password" required style="padding-right: 35px;" />
+                <i class="fa-solid fa-eye" id="togglePassword" onclick="togglePassword()" 
+                style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+                        cursor: pointer; color: #666;"></i>
+            </div>
 
             <input type="submit" name="login" value="Login" />
         </form>

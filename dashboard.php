@@ -1,16 +1,14 @@
 <?php
 session_start();
 include 'koneksi.php';
-$timeout = 300; // 5 menit (300 detik)
-$warning_time = 180; // 3 menit (180 detik)
+$timeout = 300; // 5 menit
+$warning_time = 180; // 3 menit
 
-// Cek apakah user sudah login
 if (!isset($_SESSION['username'])) {
     header("Location: login.php");
     exit;
 }
 
-// Timeout otomatis
 if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity']) > $timeout) {
     session_unset();
     session_destroy();
@@ -19,11 +17,9 @@ if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity']) >
 }
 $_SESSION['last_activity'] = time();
 
-// Ambil data user
 $role = $_SESSION['role'];
 $nama = $_SESSION['nama_lengkap'];
 ?>
-
 
 <!DOCTYPE html>
 <html lang="id">
@@ -32,9 +28,7 @@ $nama = $_SESSION['nama_lengkap'];
   <title>Dashboard - POS Kasir</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
-    body {
-      background: #f8f9fa;
-    }
+    body { background: #f8f9fa; }
     .dashboard-card {
       border-radius: 15px;
       box-shadow: 0 4px 6px rgba(0,0,0,0.1);
@@ -53,6 +47,7 @@ $nama = $_SESSION['nama_lengkap'];
     </div>
 
     <div class="row g-4">
+
       <?php if ($role === 'admin'): ?>
         <div class="col-md-4">
           <div class="card dashboard-card border-primary">
@@ -93,6 +88,15 @@ $nama = $_SESSION['nama_lengkap'];
             </div>
           </div>
         </div>
+        <div class="col-md-4">
+          <div class="card dashboard-card border-info">
+            <div class="card-body text-center">
+              <h5 class="card-title text-info">Stok Toko</h5>
+              <p class="card-text">Lihat stok barang di toko kamu.</p>
+              <a href="stok_toko.php" class="btn btn-info">Lihat</a>
+            </div>
+          </div>
+        </div>
       <?php endif; ?>
 
       <?php if ($role === 'manajer'): ?>
@@ -109,54 +113,67 @@ $nama = $_SESSION['nama_lengkap'];
 
       <?php if ($role === 'admin' || $role === 'manajer'): ?>
         <div class="col-md-4">
-            <div class="card dashboard-card border-primary">
-             <div class="card-body text-center">
-                <h5 class="card-title text-primary">Data Barang</h5>
-                <p class="card-text">Kelola data barang dagangan.</p>
-                <a href="barang.php" class="btn btn-primary">Kelola</a>
-             </div>
+          <div class="card dashboard-card border-primary">
+            <div class="card-body text-center">
+              <h5 class="card-title text-primary">Data Barang</h5>
+              <p class="card-text">Kelola data barang dagangan.</p>
+              <a href="barang.php" class="btn btn-primary">Kelola</a>
             </div>
+          </div>
         </div>
-        <?php endif; ?>
+        <div class="col-md-4">
+          <div class="card dashboard-card border-dark">
+            <div class="card-body text-center">
+              <h5 class="card-title text-dark">Data Toko</h5>
+              <p class="card-text">Kelola informasi cabang toko.</p>
+              <a href="toko.php" class="btn btn-dark">Kelola</a>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card dashboard-card border-success">
+            <div class="card-body text-center">
+              <h5 class="card-title text-success">Stok Toko</h5>
+              <p class="card-text">Lihat stok per barang di setiap toko.</p>
+              <a href="stok_toko.php" class="btn btn-success">Lihat</a>
+            </div>
+          </div>
+        </div>
+      <?php endif; ?>
+
     </div>
 
     <div class="text-center mt-5">
       <a href="logout.php" class="btn btn-outline-danger">Logout</a>
     </div>
   </div>
-  
+
   <script>
-  let warningShown = false;
-  let warningTimeout;
-  let logoutTimeout;
+    let warningShown = false;
+    let warningTimeout;
+    let logoutTimeout;
 
-  // Reset waktu jika ada aktivitas
-  function resetTimers() {
-    clearTimeout(warningTimeout);
-    clearTimeout(logoutTimeout);
-    warningShown = false;
+    function resetTimers() {
+      clearTimeout(warningTimeout);
+      clearTimeout(logoutTimeout);
+      warningShown = false;
 
-    // Setelah 3 menit tidak aktif, tampilkan peringatan
-    warningTimeout = setTimeout(() => {
-      alert("Anda tidak aktif selama 3 menit. Jika tidak ada aktivitas selama 2 menit lagi, Anda akan logout otomatis.");
-      warningShown = true;
-    }, 180000); // 180.000 ms = 3 menit
+      warningTimeout = setTimeout(() => {
+        alert("Anda tidak aktif selama 3 menit. Jika tidak ada aktivitas selama 2 menit lagi, Anda akan logout otomatis.");
+        warningShown = true;
+      }, 180000); // 3 menit
 
-    // Setelah 5 menit tidak aktif, logout otomatis
-    logoutTimeout = setTimeout(() => {
-      window.location.href = "logout.php";
-    }, 300000); // 300.000 ms = 5 menit
-  }
+      logoutTimeout = setTimeout(() => {
+        window.location.href = "logout.php";
+      }, 300000); // 5 menit
+    }
 
-  // Daftar event yang menandakan aktivitas
-  const activityEvents = ['mousemove', 'keydown', 'scroll', 'click'];
-  activityEvents.forEach(event => {
-    document.addEventListener(event, resetTimers, true);
-  });
+    const activityEvents = ['mousemove', 'keydown', 'scroll', 'click'];
+    activityEvents.forEach(event => {
+      document.addEventListener(event, resetTimers, true);
+    });
 
-  // Jalankan pertama kali
-  resetTimers();
-</script>
-
+    resetTimers();
+  </script>
 </body>
 </html>
