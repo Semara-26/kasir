@@ -1,9 +1,11 @@
 <?php
 session_start();
-if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'manajer') {
-    header("Location: login.php");
+
+if (!in_array($_SESSION['role'], ['admin', 'manajer'])) {
+    header("Location: dashboard.php");
     exit;
 }
+
 
 include 'koneksi.php';
 
