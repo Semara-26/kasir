@@ -1,31 +1,29 @@
 <?php
+session_start();
 include 'koneksi.php';
 
-// Proses saat form disubmit
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-  $id_kategori = $_POST['id_kategori'];
-  $nama = $_POST['nama_barang'];
-  $beli = $_POST['harga_beli'];
-  $jual = $_POST['harga_jual'];
-  $satuan = $_POST['satuan_barang'];
-  $stok = $_POST['stok'];
-  $id_toko = 1; // ganti sesuai implementasi multi toko
+$id_toko = 1;
 
-  if ($id_kategori != '') {
-    mysqli_query($conn, "INSERT INTO barang (id_kategori, nama_barang, harga_beli, harga_jual, satuan_barang) 
-                         VALUES ('$id_kategori', '$nama', '$beli', '$jual', '$satuan')");
-    
-    $id_barang_baru = mysqli_insert_id($conn);
+if (isset($_POST['submit'])) {
+    $nama_barang = $_POST['nama_barang'];
+    $harga_jual = $_POST['harga_jual'];
+    $stok_awal = $_POST['stok_awal'];
 
-    // Tambahkan stok awal ke tabel stoktoko
-    mysqli_query($conn, "INSERT INTO stoktoko (id_toko, id_barang, jumlah_stok) 
-                         VALUES ('$id_toko', '$id_barang_baru', '$stok')");
+    $insert_barang = mysqli_query($conn, "INSERT INTO barang (nama_barang, harga_jual) VALUES ('$nama_barang', '$harga_jual')");
 
-    header('Location: barang.php');
-    exit;
-  } else {
-    echo "<div class='alert alert-danger'>Kategori belum dipilih!</div>";
-  }
+    if ($insert_barang) {
+        $id_barang = mysqli_insert_id($conn);
+        $insert_stok = mysqli_query($conn, "INSERT INTO stoktoko (id_toko, id_barang, jumlah_stok) VALUES ($id_toko, $id_barang, $stok_awal)");
+
+        if ($insert_stok) {
+            header("Location: barang.php");
+            exit;
+        } else {
+            $error = "Gagal insert stok.";
+        }
+    } else {
+        $error = "Gagal insert barang.";
+    }
 }
 ?>
 
@@ -36,41 +34,54 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   <title>Tambah Barang</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body class="bg-light">
+<body>
+<div class="container mt-4">
+    <h2>Tambah Barang Baru (Toko ID: <?= $id_toko ?>)</h2>
 
-<div class="container py-5">
-  <h2 class="mb-4">Tambah Barang</h2>
-  <form method="post">
-    <div class="mb-3">
-      <label class="form-label">Kategori</label>
-      <select name="id_kategori" class="form-select" required>
-        <option value="">-- Pilih Kategori --</option>
-        <?php
-        $kategori = mysqli_query($conn, "SELECT * FROM kategori");
-        while ($row = mysqli_fetch_assoc($kategori)) {
-          echo "<option value='" . $row['id_kategori'] . "'>" . $row['nama_kategori'] . "</option>";
-        }
-        ?>
-      </select>
-    </div>
+    <?php if (isset($error)) : ?>
+    <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
+    <?php endif; ?>
 
-    <div class="mb-3">
-      <label class="form-label">Nama Barang</label>
-      <input type="text" name="nama_barang" class="form-control" required>
-    </div>
+    <form method="POST" action="" class="needs-validation" novalidate>
+        <div class="mb-3">
+            <label for="nama_barang" class="form-label">Nama Barang</label>
+            <input type="text" class="form-control" id="nama_barang" name="nama_barang" required>
+            <div class="invalid-feedback">Nama barang wajib diisi.</div>
+        </div>
 
-    <div class="mb-3">
-      <label class="form-label">Harga Jual</label>
-      <input type="number" name="harga_jual" class="form-control" required>
-    </div>
-    <div class="mb-3">
-      <label class="form-label">Jumlah Stok</label>
-      <input type="number" name="stok" class="form-control" min="0" required>
-    </div>
-    <button type="submit" class="btn btn-success">Simpan</button>
-    <a href="barang.php" class="btn btn-secondary">Kembali</a>
-  </form>
+        <div class="mb-3">
+            <label for="harga_jual" class="form-label">Harga Jual (Rp)</label>
+            <input type="number" class="form-control" id="harga_jual" name="harga_jual" required min="1">
+            <div class="invalid-feedback">Harga jual wajib diisi dan harus lebih dari 0.</div>
+        </div>
+
+        <div class="mb-3">
+            <label for="stok_awal" class="form-label">Stok Awal</label>
+            <input type="number" class="form-control" id="stok_awal" name="stok_awal" required min="0">
+            <div class="invalid-feedback">Stok awal wajib diisi dan minimal 0.</div>
+        </div>
+
+        <button type="submit" name="submit" class="btn btn-success">Tambah Barang</button>
+        <a href="barang.php" class="btn btn-secondary ms-2">Kembali</a>
+    </form>
 </div>
 
+<script>
+(() => {
+  'use strict';
+  const forms = document.querySelectorAll('.needs-validation');
+  Array.from(forms).forEach(form => {
+    form.addEventListener('submit', event => {
+      if (!form.checkValidity()) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+      form.classList.add('was-validated');
+    }, false);
+  });
+})();
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
