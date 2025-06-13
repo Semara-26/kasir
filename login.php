@@ -1,38 +1,33 @@
 <?php
 session_start();
-include 'koneksi.php'; // pastikan file koneksi database sudah dibuat
+include 'koneksi.php';
+
+if (isset($_SESSION['username'])) {
+    header("Location: dashboard.php");
+    exit;
+}
 
 if (isset($_POST['login'])) {
     $username = $_POST['username'];
     $password = $_POST['password'];
 
-    // Query user berdasarkan username
-    $query = mysqli_query($conn, "SELECT * FROM pengguna WHERE username = '$username' LIMIT 1");
-    if (mysqli_num_rows($query) === 1) {
-        $user = mysqli_fetch_assoc($query);
+    $stmt = $conn->prepare("SELECT * FROM pengguna WHERE username = ? LIMIT 1");
+    $stmt->bind_param("s", $username);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
-        // Verifikasi password hash
+    if ($result && $result->num_rows === 1) {
+        $user = $result->fetch_assoc();
+
         if (password_verify($password, $user['password'])) {
-            // Set session
+            session_regenerate_id(true); // keamanan tambahan
             $_SESSION['id_pengguna'] = $user['id_pengguna'];
             $_SESSION['username'] = $user['username'];
             $_SESSION['role'] = $user['role'];
             $_SESSION['nama_lengkap'] = $user['nama_lengkap'];
 
-            // Redirect sesuai role
-            if ($user['role'] == 'admin') {
-                header("Location: dashboard.php");
-                exit;
-            } elseif ($user['role'] == 'kasir') {
-                header("Location: dashboard.php");
-                exit;
-            } elseif ($user['role'] == 'manajer') {
-                header("Location: dashboard.php");
-                exit;
-            } else {
-                // role tidak dikenal
-                $error = "Role pengguna tidak valid.";
-            }
+            header("Location: dashboard.php");
+            exit;
         } else {
             $error = "Password salah.";
         }
@@ -41,6 +36,7 @@ if (isset($_POST['login'])) {
     }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="id">

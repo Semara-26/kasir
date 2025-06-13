@@ -1,15 +1,29 @@
 <?php
 session_start();
 include 'koneksi.php';
+$timeout = 300; // 5 menit (300 detik)
+$warning_time = 180; // 3 menit (180 detik)
 
+// Cek apakah user sudah login
 if (!isset($_SESSION['username'])) {
-  header("Location: login.php");
-  exit;
+    header("Location: login.php");
+    exit;
 }
 
+// Timeout otomatis
+if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity']) > $timeout) {
+    session_unset();
+    session_destroy();
+    header("Location: login.php");
+    exit;
+}
+$_SESSION['last_activity'] = time();
+
+// Ambil data user
 $role = $_SESSION['role'];
 $nama = $_SESSION['nama_lengkap'];
 ?>
+
 
 <!DOCTYPE html>
 <html lang="id">
@@ -110,5 +124,39 @@ $nama = $_SESSION['nama_lengkap'];
       <a href="logout.php" class="btn btn-outline-danger">Logout</a>
     </div>
   </div>
+  
+  <script>
+  let warningShown = false;
+  let warningTimeout;
+  let logoutTimeout;
+
+  // Reset waktu jika ada aktivitas
+  function resetTimers() {
+    clearTimeout(warningTimeout);
+    clearTimeout(logoutTimeout);
+    warningShown = false;
+
+    // Setelah 3 menit tidak aktif, tampilkan peringatan
+    warningTimeout = setTimeout(() => {
+      alert("Anda tidak aktif selama 3 menit. Jika tidak ada aktivitas selama 2 menit lagi, Anda akan logout otomatis.");
+      warningShown = true;
+    }, 180000); // 180.000 ms = 3 menit
+
+    // Setelah 5 menit tidak aktif, logout otomatis
+    logoutTimeout = setTimeout(() => {
+      window.location.href = "logout.php";
+    }, 300000); // 300.000 ms = 5 menit
+  }
+
+  // Daftar event yang menandakan aktivitas
+  const activityEvents = ['mousemove', 'keydown', 'scroll', 'click'];
+  activityEvents.forEach(event => {
+    document.addEventListener(event, resetTimers, true);
+  });
+
+  // Jalankan pertama kali
+  resetTimers();
+</script>
+
 </body>
 </html>

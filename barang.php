@@ -1,6 +1,11 @@
 <?php
-include 'koneksi.php';
 session_start();
+if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'manajer') {
+    header("Location: login.php");
+    exit;
+}
+
+include 'koneksi.php';
 
 $id_toko = 1;
 
@@ -18,7 +23,10 @@ $query = mysqli_query($conn, "SELECT b.id_barang, b.nama_barang, b.harga_jual, s
 </head>
 <body>
 <div class="container mt-4">
-    <h2 class="mb-4">Daftar Barang & Stok (Toko ID: <?= $id_toko ?>)</h2>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">Daftar Barang & Stok (Toko ID: <?= $id_toko ?>)</h2>
+        <a href="dashboard.php" class="btn btn-outline-secondary">← Kembali ke Dashboard</a>
+    </div>
 
     <a href="barang_tambah.php" class="btn btn-primary mb-3">Tambah Barang Baru</a>
 
