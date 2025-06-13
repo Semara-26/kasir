@@ -53,7 +53,9 @@ while ($row = mysqli_fetch_assoc($result)) {
               <td><?= htmlspecialchars($row['alamat_toko']) ?></td>
               <td><?= htmlspecialchars($row['tlp']) ?></td>
               <td><?= htmlspecialchars($row['nama_pemilik']) ?></td>
-              <td><img src="gambar/<?= $row['image'] ?>" width="80" alt="gambar toko"></td>
+              <td>
+                <img src="upload/<?= htmlspecialchars($row['image']) ?>" width="80" alt="gambar toko">
+              </td>
               <td>
                 <a href="edit_toko.php?id=<?= $row['id_toko'] ?>" class="btn btn-sm btn-warning">Edit</a>
                 <a href="hapus_toko.php?id=<?= $row['id_toko'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Yakin hapus toko ini?')">Hapus</a>
