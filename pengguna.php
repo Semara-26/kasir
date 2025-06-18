@@ -3,16 +3,18 @@ session_start();
 include 'koneksi.php';
 
 // --- Pengecekan Akses ---
-// Jika tidak ada session, atau rolenya bukan admin, tendang ke login
 if (!isset($_SESSION['id_pengguna']) || $_SESSION['role'] !== 'admin') {
     header("Location: login.php");
     exit;
 }
 
 // --- Mengambil Data Pengguna ---
-// Kita JOIN dengan tabel toko untuk mendapatkan nama toko, bukan hanya id_toko
-$query = mysqli_query($conn, "SELECT p.*, t.nama_toko FROM pengguna p LEFT JOIN toko t ON p.id_toko = t.id_toko ORDER BY p.id_pengguna DESC");
-
+$query = mysqli_query($conn, "
+    SELECT p.*, t.nama_toko 
+    FROM pengguna p 
+    LEFT JOIN toko t ON p.id_toko = t.id_toko 
+    ORDER BY p.id_pengguna DESC
+");
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -26,22 +28,21 @@ $query = mysqli_query($conn, "SELECT p.*, t.nama_toko FROM pengguna p LEFT JOIN 
 <div class="container py-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2>Kelola Pengguna</h2>
-        <a href="pengguna_tambah.php" class="btn btn-primary">+ Tambah Pengguna</a>
+        <div>
+            <a href="pengguna_tambah.php" class="btn btn-primary me-2">+ Tambah Pengguna</a>
+            <a href="dashboard.php" class="btn btn-outline-secondary">Kembali ke Dashboard</a>
+        </div>
     </div>
 
-    <?php if (isset($_SESSION['pesan_sukses'])): ?>
-        <div class="alert alert-success" role="alert">
-            <?= $_SESSION['pesan_sukses']; ?>
-        </div>
+    <?php if (!empty($_SESSION['pesan_sukses'])): ?>
+        <div class="alert alert-success"><?= $_SESSION['pesan_sukses']; ?></div>
         <?php unset($_SESSION['pesan_sukses']); ?>
     <?php endif; ?>
 
-<?php if (isset($_SESSION['pesan_error'])): ?>
-    <div class="alert alert-danger" role="alert">
-        <?= $_SESSION['pesan_error']; ?>
-    </div>
-    <?php unset($_SESSION['pesan_error']); ?>
-<?php endif; ?>
+    <?php if (!empty($_SESSION['pesan_error'])): ?>
+        <div class="alert alert-danger"><?= $_SESSION['pesan_error']; ?></div>
+        <?php unset($_SESSION['pesan_error']); ?>
+    <?php endif; ?>
 
     <div class="card shadow-sm">
         <div class="card-body">
@@ -67,29 +68,26 @@ $query = mysqli_query($conn, "SELECT p.*, t.nama_toko FROM pengguna p LEFT JOIN 
                             <td><span class="badge bg-secondary"><?= ucfirst($row['role']); ?></span></td>
                             <td><?= htmlspecialchars($row['nama_toko']); ?></td>
                             <td>
-                                <?php if ($row['status_aktif'] == 1): ?>
-                                    <span class="badge bg-success">Aktif</span>
-                                <?php else: ?>
-                                    <span class="badge bg-danger">Tidak Aktif</span>
-                                <?php endif; ?>
+                                <span class="badge <?= $row['status_aktif'] == 1 ? 'bg-success' : 'bg-danger'; ?>">
+                                    <?= $row['status_aktif'] == 1 ? 'Aktif' : 'Tidak Aktif'; ?>
+                                </span>
                             </td>
                             <td>
                                 <a href="pengguna_edit.php?id=<?= $row['id_pengguna']; ?>" class="btn btn-sm btn-warning">Edit</a>
-                                <?php if ($row['id_pengguna'] != $_SESSION['id_pengguna']): // Tombol hapus tidak muncul untuk diri sendiri ?>
-                                <a href="pengguna_hapus.php?id=<?= $row['id_pengguna']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('Yakin ingin menghapus pengguna ini?')">Hapus</a>
+                                <?php if ($row['id_pengguna'] != $_SESSION['id_pengguna']): ?>
+                                    <a href="pengguna_hapus.php?id=<?= $row['id_pengguna']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('Yakin ingin menghapus pengguna ini?')">Hapus</a>
                                 <?php endif; ?>
                             </td>
                         </tr>
                         <?php endwhile; ?>
                     <?php else: ?>
-                        <tr><td colspan="7" class="text-center">Belum ada data pengguna.</td></tr>
+                        <tr>
+                            <td colspan="7" class="text-center">Belum ada data pengguna.</td>
+                        </tr>
                     <?php endif; ?>
                 </tbody>
             </table>
         </div>
-    </div>
-    <div class="mt-3">
-        <a href="dashboard.php" class="btn btn-outline-secondary">Kembali ke Dashboard</a>
     </div>
 </div>
 

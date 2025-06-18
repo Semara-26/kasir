@@ -3,13 +3,18 @@ include 'koneksi.php';
 
 $id_toko = 1;
 $id_barang = $_GET['id'] ?? 0;
+$from = $_GET['from'] ?? ''; // Tangkap asal halaman
 
 if (!$id_barang) {
     header("Location: barang.php");
     exit;
 }
 
-$query = mysqli_query($conn, "SELECT b.*, s.jumlah_stok FROM barang b LEFT JOIN stoktoko s ON b.id_barang = s.id_barang AND s.id_toko = $id_toko WHERE b.id_barang = $id_barang LIMIT 1");
+$query = mysqli_query($conn, "SELECT b.*, s.jumlah_stok 
+    FROM barang b 
+    LEFT JOIN stoktoko s ON b.id_barang = s.id_barang AND s.id_toko = $id_toko 
+    WHERE b.id_barang = $id_barang 
+    LIMIT 1");
 $data = mysqli_fetch_assoc($query);
 
 if (!$data) {
@@ -21,6 +26,7 @@ if (isset($_POST['submit'])) {
     $nama_barang = $_POST['nama_barang'];
     $harga_jual = $_POST['harga_jual'];
     $stok = $_POST['stok'];
+    $from_post = $_POST['from'] ?? ''; // Ambil dari form
 
     $update_barang = mysqli_query($conn, "UPDATE barang SET nama_barang='$nama_barang', harga_jual='$harga_jual' WHERE id_barang=$id_barang");
     $update_stok = mysqli_query($conn, "INSERT INTO stoktoko (id_toko, id_barang, jumlah_stok)
@@ -28,7 +34,8 @@ if (isset($_POST['submit'])) {
                                     ON DUPLICATE KEY UPDATE jumlah_stok = $stok");
 
     if ($update_barang && $update_stok) {
-        header("Location: barang.php");
+        $redirect = ($from_post === 'stok_toko') ? 'stok_toko.php' : 'barang.php';
+        header("Location: $redirect");
         exit;
     } else {
         $error = "Gagal update data.";
@@ -51,7 +58,9 @@ if (isset($_POST['submit'])) {
     <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
     <?php endif; ?>
 
-    <form method="POST" class="needs-validation" novalidate>
+    <form method="POST" class="needs-validation" novalidate action="barang_edit.php?id=<?= $id_barang ?>&from=<?= urlencode($from) ?>">
+        <input type="hidden" name="from" value="<?= htmlspecialchars($from) ?>">
+        
         <div class="mb-3">
             <label for="nama_barang" class="form-label">Nama Barang</label>
             <input type="text" class="form-control" id="nama_barang" name="nama_barang" required value="<?= htmlspecialchars($data['nama_barang']) ?>">
@@ -71,7 +80,7 @@ if (isset($_POST['submit'])) {
         </div>
 
         <button type="submit" name="submit" class="btn btn-primary">Update Barang</button>
-        <a href="barang.php" class="btn btn-secondary ms-2">Batal</a>
+        <a href="<?= ($from === 'stok_toko') ? 'stok_toko.php' : 'barang.php' ?>" class="btn btn-secondary ms-2">Batal</a>
     </form>
 </div>
 
@@ -91,6 +100,5 @@ if (isset($_POST['submit'])) {
   })
 })();
 </script>
-
 </body>
 </html>

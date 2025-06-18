@@ -22,6 +22,7 @@ $query = mysqli_query($conn, "SELECT b.id_barang, b.nama_barang, b.harga_jual, s
     <meta charset="UTF-8" />
     <title>Daftar Barang & Stok</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    
 </head>
 <body>
 <div class="container mt-4">
@@ -39,6 +40,11 @@ $query = mysqli_query($conn, "SELECT b.id_barang, b.nama_barang, b.harga_jual, s
     <?php endif; ?>
 
     <a href="barang_tambah.php" class="btn btn-primary mb-3">Tambah Barang Baru</a>
+    <div class="mb-2">
+        <span class="badge bg-danger">Stok < 10</span>
+        <span class="badge bg-warning text-dark">Stok < 20</span>
+    </div>
+
 
     <table class="table table-striped table-bordered align-middle">
         <thead class="table-dark">
@@ -51,22 +57,34 @@ $query = mysqli_query($conn, "SELECT b.id_barang, b.nama_barang, b.harga_jual, s
             </tr>
         </thead>
         <tbody>
-            <?php if(mysqli_num_rows($query) > 0): ?>
-                <?php while($row = mysqli_fetch_assoc($query)) : ?>
-                <tr>
-                    <td><?= $row['id_barang'] ?></td>
-                    <td><?= htmlspecialchars($row['nama_barang']) ?></td>
-                    <td><?= number_format($row['harga_jual'], 0, ',', '.') ?></td>
-                    <td><?= $row['jumlah_stok'] ?? 0 ?></td>
-                    <td>
-                        <a href="barang_edit.php?id=<?= $row['id_barang'] ?>" class="btn btn-sm btn-warning">Edit</a>
-                        <a href="barang_hapus.php?id=<?= $row['id_barang'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Yakin hapus barang ini?')">Hapus</a>
-                    </td>
-                </tr>
-                <?php endwhile; ?>
-            <?php else: ?>
-                <tr><td colspan="5" class="text-center">Belum ada data barang.</td></tr>
-            <?php endif; ?>
+            <tbody>
+    <?php if(mysqli_num_rows($query) > 0): ?>
+        <?php while($row = mysqli_fetch_assoc($query)) : ?>
+        <?php
+            $jumlah_stok = intval($row['jumlah_stok'] ?? 0);
+            $row_class = '';
+            if ($jumlah_stok < 10) {
+                $row_class = 'table-danger'; // Merah muda
+            } elseif ($jumlah_stok < 20) {
+                $row_class = 'table-warning'; // Kuning
+            }
+        ?>
+        <tr class="<?= $row_class ?>">
+            <td><?= $row['id_barang'] ?></td>
+            <td><?= htmlspecialchars($row['nama_barang']) ?></td>
+            <td><?= number_format($row['harga_jual'], 0, ',', '.') ?></td>
+            <td><?= $jumlah_stok ?></td>
+            <td>
+                <a href="barang_edit.php?id=<?= $row['id_barang'] ?>" class="btn btn-sm btn-warning">Edit</a>
+                <a href="barang_hapus.php?id=<?= $row['id_barang'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Yakin hapus barang ini?')">Hapus</a>
+            </td>
+        </tr>
+        <?php endwhile; ?>
+    <?php else: ?>
+        <tr><td colspan="5" class="text-center">Belum ada data barang.</td></tr>
+    <?php endif; ?>
+</tbody>
+
         </tbody>
     </table>
 </div>
