@@ -40,7 +40,7 @@ if (isset($_POST['submit'])) {
 
             if (mysqli_stmt_execute($stmt_stok)) {
                 // Set pesan sukses di session untuk ditampilkan di halaman barang.php
-                $_SESSION['pesan_sukses'] = "Barang baru berhasil ditambahkan.";
+                $_SESSION['pesan_sukses_barang'] = "Barang baru berhasil ditambahkan.";
                 header("Location: barang.php");
                 exit;
             } else {
