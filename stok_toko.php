@@ -7,12 +7,17 @@ if (!isset($_SESSION['role']) || !in_array($_SESSION['role'], ['admin', 'manajer
     header("Location: login.php");
     exit;
 }
+if ($user_role === 'kasir' && $filter_toko_id != $user_id_toko) {
+    $filter_toko_id = $user_id_toko; // paksa filter ke toko kasir
+}
+
 
 $user_role = $_SESSION['role'];
 $user_id_toko = isset($_SESSION['id_toko']) ? intval($_SESSION['id_toko']) : 0;
 
 $filter_toko_id = isset($_GET['filter_toko_id']) ? intval($_GET['filter_toko_id']) : 0;
 $filter_nama_barang = isset($_GET['filter_nama_barang']) ? mysqli_real_escape_string($conn, $_GET['filter_nama_barang']) : '';
+
 
 if ($user_role === 'kasir') {
     $filter_toko_id = $user_id_toko;

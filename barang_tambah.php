@@ -2,19 +2,15 @@
 session_start();
 include 'koneksi.php';
 
-// Hardcoded toko, sesuaikan jika sudah ada sistem login manajer/admin
-$id_toko = 1;
+// Ambil ID toko dari sesi login (digunakan untuk stok awal)
+$id_toko = $_SESSION['id_toko'] ?? null;
 
-// Ambil data kategori untuk ditampilkan di dropdown
+// Ambil data kategori
 $kategori_query = mysqli_query($conn, "SELECT id_kategori, nama_kategori FROM kategori ORDER BY nama_kategori ASC");
 
-$error = ''; // Inisialisasi variabel error di luar blok if
+$error = '';
 
-// Proses form HANYA jika tombol 'submit' ditekan
 if (isset($_POST['submit'])) {
-    
-    // PENTING: Semua baris yang menggunakan $_POST ada DI DALAM blok if ini.
-    // Inilah yang mencegah munculnya warning saat halaman pertama kali dibuka.
     $id_kategori = $_POST['id_kategori'];
     $nama_barang = $_POST['nama_barang'];
     $harga_beli = $_POST['harga_beli'];
@@ -22,31 +18,43 @@ if (isset($_POST['submit'])) {
     $satuan_barang = $_POST['satuan_barang'];
     $stok_awal = $_POST['stok_awal'];
 
-    // Validasi dasar
-    if (empty($id_kategori) || empty($nama_barang) || empty($harga_jual) || empty($harga_beli) || empty($satuan_barang)) {
+    if (empty($id_kategori) || empty($nama_barang) || empty($harga_beli) || empty($harga_jual) || empty($satuan_barang)) {
         $error = "Semua field wajib diisi.";
     } else {
-        // Gunakan Prepared Statement untuk INSERT ke tabel 'barang'
+        // Insert ke tabel barang
         $stmt_barang = mysqli_prepare($conn, "INSERT INTO barang (id_kategori, nama_barang, harga_beli, harga_jual, satuan_barang) VALUES (?, ?, ?, ?, ?)");
-        // Tipe data: i = integer, s = string, d = double/decimal
         mysqli_stmt_bind_param($stmt_barang, "isdds", $id_kategori, $nama_barang, $harga_beli, $harga_jual, $satuan_barang);
-        
+
         if (mysqli_stmt_execute($stmt_barang)) {
             $id_barang_baru = mysqli_insert_id($conn);
 
-            // Gunakan Prepared Statement untuk INSERT ke tabel 'stoktoko'
-            $stmt_stok = mysqli_prepare($conn, "INSERT INTO stoktoko (id_toko, id_barang, jumlah_stok) VALUES (?, ?, ?)");
-            mysqli_stmt_bind_param($stmt_stok, "iii", $id_toko, $id_barang_baru, $stok_awal);
+            // Ambil semua toko
+            $toko_query = mysqli_query($conn, "SELECT id_toko FROM toko");
+            $berhasil = true;
 
-            if (mysqli_stmt_execute($stmt_stok)) {
-                // Set pesan sukses di session untuk ditampilkan di halaman barang.php
-                $_SESSION['pesan_sukses_barang'] = "Barang baru berhasil ditambahkan.";
+            // Siapkan statement stoktoko
+            $stmt_stok = mysqli_prepare($conn, "INSERT INTO stoktoko (id_toko, id_barang, jumlah_stok) VALUES (?, ?, ?)");
+            mysqli_stmt_bind_param($stmt_stok, "iii", $id_toko_loop, $id_barang_baru, $jumlah_stok_loop);
+
+            while ($toko = mysqli_fetch_assoc($toko_query)) {
+                $id_toko_loop = $toko['id_toko'];
+                $jumlah_stok_loop = $stok_awal; // Semua toko dapat stok yang sama
+
+                if (!mysqli_stmt_execute($stmt_stok)) {
+                    $berhasil = false;
+                    $error = "Gagal menambahkan stok untuk toko ID {$id_toko_loop}. Error: " . mysqli_stmt_error($stmt_stok);
+                    break;
+                }
+            }
+
+
+            mysqli_stmt_close($stmt_stok);
+
+            if ($berhasil) {
+                $_SESSION['pesan_sukses_barang'] = "Barang baru berhasil ditambahkan ke semua toko.";
                 header("Location: barang.php");
                 exit;
-            } else {
-                $error = "Gagal menambahkan data stok. Error: " . mysqli_stmt_error($stmt_stok);
             }
-            mysqli_stmt_close($stmt_stok);
 
         } else {
             $error = "Gagal menambahkan data barang. Error: " . mysqli_stmt_error($stmt_barang);
@@ -87,7 +95,7 @@ if (isset($_POST['submit'])) {
             <input type="text" class="form-control" id="nama_barang" name="nama_barang" required>
         </div>
 
-         <div class="row">
+        <div class="row">
             <div class="col-md-6 mb-3">
                 <label for="harga_beli" class="form-label">Harga Beli (Rp)</label>
                 <input type="number" class="form-control" id="harga_beli" name="harga_beli" required min="0" step="0.01">
