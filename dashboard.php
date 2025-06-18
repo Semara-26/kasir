@@ -46,102 +46,118 @@ $nama = $_SESSION['nama_lengkap'];
       <p class="text-muted">Selamat datang, <strong><?= $nama; ?></strong> (<?= $role; ?>)</p>
     </div>
 
+    <?php // ============== KODE UNTUK MENAMPILKAN NOTIFIKASI ============== ?>
+    <?php if (isset($_SESSION['pesan_sukses'])): ?>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <?= $_SESSION['pesan_sukses']; ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <?php unset($_SESSION['pesan_sukses']); ?>
+    <?php endif; ?>
+     <?php if (isset($_SESSION['pesan_error'])): ?>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <?= $_SESSION['pesan_error']; ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <?php unset($_SESSION['pesan_error']); ?>
+    <?php endif; ?>
+    <?php // =============================================================== ?>
+
     <div class="row g-4">
 
-      <?php if ($role === 'admin'): ?>
+    <?php // ============== HANYA UNTUK ADMIN ============== ?>
+    <?php if ($role === 'admin'): ?>
         <div class="col-md-4">
-          <div class="card dashboard-card border-primary">
-            <div class="card-body text-center">
-              <h5 class="card-title text-primary">Kelola Pengguna</h5>
-              <p class="card-text">Tambah, ubah, atau hapus pengguna sistem.</p>
-              <a href="pengguna.php" class="btn btn-primary">Buka</a>
+            <div class="card dashboard-card border-primary">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-primary">Kelola Pengguna</h5>
+                    <p class="card-text">Tambah, ubah, atau hapus pengguna sistem.</p>
+                    <a href="pengguna.php" class="btn btn-primary">Buka</a>
+                </div>
             </div>
-          </div>
         </div>
         <div class="col-md-4">
-          <div class="card dashboard-card border-secondary">
-            <div class="card-body text-center">
-              <h5 class="card-title text-secondary">Kategori Barang</h5>
-              <p class="card-text">Atur kategori untuk barang dagang.</p>
-              <a href="kategori.php" class="btn btn-secondary">Buka</a>
+            <div class="card dashboard-card border-secondary">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-secondary">Kategori Barang</h5>
+                    <p class="card-text">Atur kategori untuk barang dagang.</p>
+                    <a href="kategori.php" class="btn btn-secondary">Buka</a>
+                </div>
             </div>
-          </div>
         </div>
-      <?php endif; ?>
+    <?php endif; ?>
 
-      <?php if ($role === 'kasir'): ?>
+    <?php // ============== HANYA UNTUK KASIR ============== ?>
+    <?php if ($role === 'kasir'): ?>
         <div class="col-md-4">
-          <div class="card dashboard-card border-success">
-            <div class="card-body text-center">
-              <h5 class="card-title text-success">Transaksi</h5>
-              <p class="card-text">Lakukan penjualan dan cetak struk.</p>
-              <a href="transaksi.php" class="btn btn-success">Mulai</a>
+            <div class="card dashboard-card border-success">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-success">Transaksi</h5>
+                    <p class="card-text">Lakukan penjualan dan cetak struk.</p>
+                    <a href="transaksi_kasir.php" class="btn btn-success">Mulai</a>
+                </div>
             </div>
-          </div>
         </div>
-        <div class="col-md-4">
-          <div class="card dashboard-card border-warning">
-            <div class="card-body text-center">
-              <h5 class="card-title text-warning">Data Member</h5>
-              <p class="card-text">Kelola member dan data pelanggan.</p>
-              <a href="member.php" class="btn btn-warning">Kelola</a>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-4">
-          <div class="card dashboard-card border-info">
-            <div class="card-body text-center">
-              <h5 class="card-title text-info">Stok Toko</h5>
-              <p class="card-text">Lihat stok barang di toko kamu.</p>
-              <a href="stok_toko.php" class="btn btn-info">Lihat</a>
-            </div>
-          </div>
-        </div>
-      <?php endif; ?>
+    <?php endif; ?>
 
-      <?php if ($role === 'manajer'): ?>
+    <?php // ============== HANYA UNTUK MANAJER ============== ?>
+    <?php if ($role === 'manajer'): ?>
         <div class="col-md-4">
-          <div class="card dashboard-card border-info">
-            <div class="card-body text-center">
-              <h5 class="card-title text-info">Laporan Penjualan</h5>
-              <p class="card-text">Lihat rekap penjualan harian dan bulanan.</p>
-              <a href="laporan.php" class="btn btn-info">Lihat</a>
+            <div class="card dashboard-card border-info">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-info">Laporan Penjualan</h5>
+                    <p class="card-text">Lihat rekap penjualan harian dan bulanan.</p>
+                    <a href="laporan.php" class="btn btn-info">Lihat</a>
+                </div>
             </div>
-          </div>
         </div>
-      <?php endif; ?>
+    <?php endif; ?>
 
-      <?php if ($role === 'admin' || $role === 'manajer'): ?>
+    <?php // ============== UNTUK ADMIN DAN MANAJER ============== ?>
+    <?php if (in_array($role, ['admin', 'manajer'])): ?>
         <div class="col-md-4">
-          <div class="card dashboard-card border-primary">
-            <div class="card-body text-center">
-              <h5 class="card-title text-primary">Data Barang</h5>
-              <p class="card-text">Kelola data barang dagangan.</p>
-              <a href="barang.php" class="btn btn-primary">Kelola</a>
+            <div class="card dashboard-card border-primary">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-primary">Data Barang</h5>
+                    <p class="card-text">Kelola data barang dagangan.</p>
+                    <a href="barang.php" class="btn btn-primary">Kelola</a>
+                </div>
             </div>
-          </div>
         </div>
         <div class="col-md-4">
-          <div class="card dashboard-card border-dark">
-            <div class="card-body text-center">
-              <h5 class="card-title text-dark">Data Toko</h5>
-              <p class="card-text">Kelola informasi cabang toko.</p>
-              <a href="toko.php" class="btn btn-dark">Kelola</a>
+            <div class="card dashboard-card border-dark">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-dark">Data Toko</h5>
+                    <p class="card-text">Kelola informasi cabang toko.</p>
+                    <a href="toko.php" class="btn btn-dark">Kelola</a>
+                </div>
             </div>
-          </div>
         </div>
-        <div class="col-md-4">
-          <div class="card dashboard-card border-success">
-            <div class="card-body text-center">
-              <h5 class="card-title text-success">Stok Toko</h5>
-              <p class="card-text">Lihat stok per barang di setiap toko.</p>
-              <a href="stok_toko.php" class="btn btn-success">Lihat</a>
-            </div>
-          </div>
-        </div>
-      <?php endif; ?>
+    <?php endif; ?>
 
-    </div>
+    <?php // ============== UNTUK SEMUA ROLE (ADMIN, MANAJER, KASIR) ============== ?>
+    <?php if (in_array($role, ['admin', 'manajer', 'kasir'])): ?>
+        <div class="col-md-4">
+            <div class="card dashboard-card border-warning">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-warning">Data Member</h5>
+                    <p class="card-text">Kelola member dan data pelanggan.</p>
+                    <a href="member.php" class="btn btn-warning">Kelola</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card dashboard-card border-info">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-info">Stok Toko</h5>
+                    <p class="card-text">Lihat stok barang di toko kamu.</p>
+                    <a href="stok_toko.php" class="btn btn-info">Lihat</a>
+                </div>
+            </div>
+        </div>
+    <?php endif; ?>
+
+</div>
 
     <div class="text-center mt-5">
       <a href="logout.php" class="btn btn-outline-danger">Logout</a>
@@ -175,5 +191,6 @@ $nama = $_SESSION['nama_lengkap'];
 
     resetTimers();
   </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

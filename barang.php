@@ -9,7 +9,7 @@ if (!in_array($_SESSION['role'], ['admin', 'manajer'])) {
 
 include 'koneksi.php';
 
-$id_toko = 1;
+$id_toko = $_SESSION['id_toko'];
 
 $query = mysqli_query($conn, "SELECT b.id_barang, b.nama_barang, b.harga_jual, s.jumlah_stok 
                              FROM barang b

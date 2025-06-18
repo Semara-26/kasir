@@ -2,8 +2,8 @@
 session_start();
 include 'koneksi.php';
 
-// Hardcoded toko, sesuaikan jika sudah ada sistem login manajer/admin
-$id_toko = 1;
+
+$id_toko = $_SESSION['id_toko'];
 
 // Ambil data kategori untuk ditampilkan di dropdown
 $kategori_query = mysqli_query($conn, "SELECT id_kategori, nama_kategori FROM kategori ORDER BY nama_kategori ASC");
