@@ -1,11 +1,11 @@
 <?php
 session_start();
 
+// Cek role
 if (!in_array($_SESSION['role'], ['admin', 'manajer'])) {
     header("Location: dashboard.php");
     exit;
 }
-
 
 include 'koneksi.php';
 
@@ -30,6 +30,14 @@ $query = mysqli_query($conn, "SELECT b.id_barang, b.nama_barang, b.harga_jual, s
         <a href="dashboard.php" class="btn btn-outline-secondary">← Kembali ke Dashboard</a>
     </div>
 
+    <!-- Notifikasi sukses -->
+    <?php if (isset($_SESSION['pesan_sukses_barang'])): ?>
+        <div class="alert alert-success">
+            <?= $_SESSION['pesan_sukses_barang']; ?>
+        </div>
+        <?php unset($_SESSION['pesan_sukses_barang']); ?>
+    <?php endif; ?>
+
     <a href="barang_tambah.php" class="btn btn-primary mb-3">Tambah Barang Baru</a>
 
     <table class="table table-striped table-bordered align-middle">
@@ -49,7 +57,7 @@ $query = mysqli_query($conn, "SELECT b.id_barang, b.nama_barang, b.harga_jual, s
                     <td><?= $row['id_barang'] ?></td>
                     <td><?= htmlspecialchars($row['nama_barang']) ?></td>
                     <td><?= number_format($row['harga_jual'], 0, ',', '.') ?></td>
-                    <td><?= $row['jumlah_stok'] !== null ? $row['jumlah_stok'] : 0 ?></td>
+                    <td><?= $row['jumlah_stok'] ?? 0 ?></td>
                     <td>
                         <a href="barang_edit.php?id=<?= $row['id_barang'] ?>" class="btn btn-sm btn-warning">Edit</a>
                         <a href="barang_hapus.php?id=<?= $row['id_barang'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Yakin hapus barang ini?')">Hapus</a>

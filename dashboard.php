@@ -161,11 +161,11 @@ $nama = $_SESSION['nama_lengkap'];
       warningTimeout = setTimeout(() => {
         alert("Anda tidak aktif selama 3 menit. Jika tidak ada aktivitas selama 2 menit lagi, Anda akan logout otomatis.");
         warningShown = true;
-      }, 180000); // 3 menit
+      }, 600000); // 10 menit
 
       logoutTimeout = setTimeout(() => {
         window.location.href = "logout.php";
-      }, 300000); // 5 menit
+      }, 900000); // 15 menit
     }
 
     const activityEvents = ['mousemove', 'keydown', 'scroll', 'click'];
