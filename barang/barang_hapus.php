@@ -27,7 +27,7 @@ mysqli_stmt_close($stmt_cek);
 
 if ($data_cek['jumlah'] > 0) {
     // Jika barang sudah pernah terjual, HANYA set pesan error dan kembali.
-    $_SESSION['pesan_error'] = "Gagal! Barang ID #{$id_barang} tidak dapat dihapus karena sudah memiliki riwayat transaksi.";
+    $_SESSION['pesan'] = ['tipe' => 'danger', 'teks' => "Gagal! Barang ID #{$id_barang} tidak dapat dihapus karena sudah memiliki riwayat transaksi."];
     header('Location: barang.php');
     exit;
 }
@@ -49,12 +49,12 @@ try {
 
     mysqli_commit($conn);
     // Jika berhasil, HANYA set pesan sukses.
-    $_SESSION['pesan_sukses'] = "Barang ID #{$id_barang} berhasil dihapus.";
+    $_SESSION['pesan'] = ['tipe' => 'success', 'teks' => "Barang ID #{$id_barang} berhasil dihapus."];
 
 } catch (mysqli_sql_exception $exception) {
     mysqli_rollback($conn);
     // Jika ada error lain, HANYA set pesan error.
-    $_SESSION['pesan_error'] = "Terjadi kesalahan saat menghapus data.";
+    $_SESSION['pesan'] = ['tipe' => 'danger', 'teks' => 'Terjadi kesalahan saat menghapus data.'];
 }
 
 // Redirect ke halaman yang sesuai di akhir
