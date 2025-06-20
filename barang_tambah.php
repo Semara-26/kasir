@@ -2,6 +2,7 @@
 session_start();
 include 'koneksi.php';
 
+
 // Ambil ID toko dari sesi login (digunakan untuk stok awal)
 $id_toko = $_SESSION['id_toko'] ?? null;
 

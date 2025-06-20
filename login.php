@@ -25,6 +25,7 @@ if (isset($_POST['login'])) {
             $_SESSION['username'] = $user['username'];
             $_SESSION['role'] = $user['role'];
             $_SESSION['nama_lengkap'] = $user['nama_lengkap'];
+            $_SESSION['id_toko'] = $user['id_toko']; 
 
             header("Location: dashboard.php");
             exit;
@@ -34,6 +35,7 @@ if (isset($_POST['login'])) {
     } else {
         $error = "Username tidak ditemukan.";
     }
+
 }
 ?>
 

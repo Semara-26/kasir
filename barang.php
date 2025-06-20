@@ -9,8 +9,12 @@ if (!in_array($_SESSION['role'], ['admin', 'manajer', 'kasir'])) {
 
 include 'koneksi.php';
 
+
+$id_toko = $_SESSION['id_toko'];
+
 $role = $_SESSION['role'];
 $id_toko_session = $_SESSION['id_toko'] ?? null;
+
 
 // Ambil filter toko dari GET (hanya untuk admin/manajer)
 $filter_toko_id = isset($_GET['toko']) ? intval($_GET['toko']) : 0;

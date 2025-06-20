@@ -1,7 +1,7 @@
 <?php
 include 'koneksi.php';
 
-$id_toko = 1;
+$id_toko = $_SESSION['id_toko'];
 $id_barang = $_GET['id'] ?? 0;
 
 if (!$id_barang) {
