@@ -1,6 +1,6 @@
 <?php
 session_start();
-include 'koneksi.php';
+include '../config/koneksi.php';
 
 // --- Pengecekan Akses ---
 if (!isset($_SESSION['id_pengguna']) || $_SESSION['role'] !== 'admin') {
@@ -30,7 +30,7 @@ $query = mysqli_query($conn, "
         <h2>Kelola Pengguna</h2>
         <div>
             <a href="pengguna_tambah.php" class="btn btn-primary me-2">+ Tambah Pengguna</a>
-            <a href="dashboard.php" class="btn btn-outline-secondary">Kembali ke Dashboard</a>
+            <a href="../dashboard.php" class="btn btn-outline-secondary">Kembali ke Dashboard</a>
         </div>
     </div>
 

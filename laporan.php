@@ -5,7 +5,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'manajer') {
     exit;
 }
 
-include 'koneksi.php';
+include 'config/koneksi.php';
 
 $filter_tampilan = isset($_GET['mode']) ? $_GET['mode'] : 'semua'; // 'harian', 'bulanan', 'semua'
 $filter_harian = isset($_GET['tanggal']) ? $_GET['tanggal'] : date('Y-m-d');

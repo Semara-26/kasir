@@ -1,6 +1,6 @@
 <?php
 session_start();
-include 'koneksi.php';
+include '../config/koneksi.php';
 
 // Cek role admin atau manajer
 if (!isset($_SESSION['username']) || !in_array($_SESSION['role'], ['admin', 'manajer'])) {
@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Proses upload gambar
     $gambar = '';
     if ($_FILES['image']['name']) {
-        $target_dir = "upload/";
+        $target_dir = "../public/upload/";
         $gambar = basename($_FILES["image"]["name"]);
         $target_file = $target_dir . $gambar;
         $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));

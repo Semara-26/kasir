@@ -1,6 +1,6 @@
 <?php
 session_start();
-include 'koneksi.php';
+include 'config/koneksi.php';
 
 // Ambil role & id toko dari session lebih awal
 $user_role = $_SESSION['role'];
