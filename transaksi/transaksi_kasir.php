@@ -1,6 +1,6 @@
 <?php
 session_start();
-include 'koneksi.php';
+include '../config/koneksi.php';
 
 // Tentukan besaran diskon dalam persen (misal: 10% untuk semua member)
 define('DISKON_MEMBER_PERSEN', 10);
@@ -85,7 +85,7 @@ $produk_query = mysqli_query($conn, "SELECT * FROM barang ORDER BY nama_barang A
 <body class="bg-light">
 
 <div class="container-fluid p-4">
-    <a href="dashboard.php" class="btn btn-secondary mb-3">← Kembali ke Dashboard</a>
+    <a href="../dashboard.php" class="btn btn-secondary mb-3">← Kembali ke Dashboard</a>
     <div class="row">
         <div class="col-md-7">
             <h3>Daftar Produk</h3>

@@ -3,11 +3,11 @@ session_start();
 
 // Cek role
 if (!in_array($_SESSION['role'], ['admin', 'manajer', 'kasir'])) {
-    header("Location: dashboard.php");
+    header("Location: ../dashboard.php");
     exit;
 }
 
-include 'koneksi.php';
+include '../config/koneksi.php';
 
 
 $id_toko = $_SESSION['id_toko'];
@@ -34,6 +34,8 @@ if ($role !== 'kasir') {
     }
 }
 
+
+
 // Ambil data barang & stok untuk toko terpilih
 $query = mysqli_query($conn, "SELECT b.id_barang, b.nama_barang, b.harga_jual, s.jumlah_stok 
     FROM barang b
@@ -52,8 +54,32 @@ $query = mysqli_query($conn, "SELECT b.id_barang, b.nama_barang, b.harga_jual, s
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2 class="mb-0">Daftar Barang & Stok (Toko ID: <?= $id_toko ?>)</h2>
-        <a href="dashboard.php" class="btn btn-outline-secondary">← Kembali ke Dashboard</a>
+        <a href="../dashboard.php" class="btn btn-outline-secondary">← Kembali ke Dashboard</a>
     </div>
+
+    <?php if (isset($_SESSION['pesan'])): ?>
+        <div class="alert alert-<?= $_SESSION['pesan']['tipe']; ?> alert-dismissible fade show" role="alert">
+            <?= htmlspecialchars($_SESSION['pesan']['teks']); ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <?php unset($_SESSION['pesan']); ?>
+    <?php endif; ?>
+
+    <?php if (isset($_SESSION['pesan_sukses'])): ?>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <?= htmlspecialchars($_SESSION['pesan_sukses']); ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <?php unset($_SESSION['pesan_sukses']); ?>
+    <?php endif; ?>
+    
+    <?php if (isset($_SESSION['pesan_error'])): ?>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <?= htmlspecialchars($_SESSION['pesan_error']); ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <?php unset($_SESSION['pesan_error']); ?>
+    <?php endif; ?>
 
     <!-- Filter Toko (admin/manajer) -->
     <?php if ($role !== 'kasir'): ?>

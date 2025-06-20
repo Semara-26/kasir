@@ -1,8 +1,9 @@
 <?php
 session_start();
-include 'koneksi.php';
-$timeout = 300; // 5 menit
-$warning_time = 180; // 3 menit
+// PATH BARU: Mengarah ke dalam folder config
+include 'config/koneksi.php'; 
+$timeout = 900; // 15 menit
+$warning_time = 600; // 10 menit
 
 if (!isset($_SESSION['username'])) {
     header("Location: login.php");
@@ -33,9 +34,15 @@ $nama = $_SESSION['nama_lengkap'];
       border-radius: 15px;
       box-shadow: 0 4px 6px rgba(0,0,0,0.1);
       transition: transform .2s;
+      height: 100%;
     }
     .dashboard-card:hover {
-      transform: translateY(-3px);
+      transform: translateY(-5px);
+    }
+    .card-body {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
     }
   </style>
 </head>
@@ -43,10 +50,9 @@ $nama = $_SESSION['nama_lengkap'];
   <div class="container py-5">
     <div class="text-center mb-4">
       <h1 class="fw-bold">Dashboard</h1>
-      <p class="text-muted">Selamat datang, <strong><?= $nama; ?></strong> (<?= $role; ?>)</p>
+      <p class="text-muted">Selamat datang, <strong><?= htmlspecialchars($nama); ?></strong> (<?= htmlspecialchars($role); ?>)</p>
     </div>
 
-    <?php // ============== KODE UNTUK MENAMPILKAN NOTIFIKASI ============== ?>
     <?php if (isset($_SESSION['pesan_sukses'])): ?>
         <div class="alert alert-success alert-dismissible fade show" role="alert">
             <?= $_SESSION['pesan_sukses']; ?>
@@ -54,14 +60,13 @@ $nama = $_SESSION['nama_lengkap'];
         </div>
         <?php unset($_SESSION['pesan_sukses']); ?>
     <?php endif; ?>
-     <?php if (isset($_SESSION['pesan_error'])): ?>
+    <?php if (isset($_SESSION['pesan_error'])): ?>
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
             <?= $_SESSION['pesan_error']; ?>
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
         <?php unset($_SESSION['pesan_error']); ?>
     <?php endif; ?>
-    <?php // =============================================================== ?>
 
     <div class="row g-4">
 
@@ -72,7 +77,7 @@ $nama = $_SESSION['nama_lengkap'];
                 <div class="card-body text-center">
                     <h5 class="card-title text-primary">Kelola Pengguna</h5>
                     <p class="card-text">Tambah, ubah, atau hapus pengguna sistem.</p>
-                    <a href="pengguna.php" class="btn btn-primary">Buka</a>
+                    <a href="pengguna/pengguna.php" class="btn btn-primary mt-auto">Buka</a>
                 </div>
             </div>
         </div>
@@ -81,7 +86,7 @@ $nama = $_SESSION['nama_lengkap'];
                 <div class="card-body text-center">
                     <h5 class="card-title text-secondary">Kategori Barang</h5>
                     <p class="card-text">Atur kategori untuk barang dagang.</p>
-                    <a href="kategori.php" class="btn btn-secondary">Buka</a>
+                    <a href="kategori/kategori.php" class="btn btn-secondary mt-auto">Buka</a>
                 </div>
             </div>
         </div>
@@ -94,7 +99,7 @@ $nama = $_SESSION['nama_lengkap'];
                 <div class="card-body text-center">
                     <h5 class="card-title text-success">Transaksi</h5>
                     <p class="card-text">Lakukan penjualan dan cetak struk.</p>
-                    <a href="transaksi_kasir.php" class="btn btn-success">Mulai</a>
+                    <a href="transaksi/transaksi_kasir.php" class="btn btn-success mt-auto">Mulai</a>
                 </div>
             </div>
         </div>
@@ -107,7 +112,7 @@ $nama = $_SESSION['nama_lengkap'];
                 <div class="card-body text-center">
                     <h5 class="card-title text-info">Laporan Penjualan</h5>
                     <p class="card-text">Lihat rekap penjualan harian dan bulanan.</p>
-                    <a href="laporan.php" class="btn btn-info">Lihat</a>
+                    <a href="laporan.php" class="btn btn-info mt-auto">Lihat</a>
                 </div>
             </div>
         </div>
@@ -117,11 +122,11 @@ $nama = $_SESSION['nama_lengkap'];
     <?php if (in_array($role, ['admin', 'manajer'])): ?>
         <div class="col-md-4">
             <div class="card dashboard-card border-primary">
-                <div class="card-body text-center">
-                    <h5 class="card-title text-primary">Data Barang</h5>
-                    <p class="card-text">Kelola data barang dagangan.</p>
-                    <a href="barang.php" class="btn btn-primary">Kelola</a>
-                </div>
+             <div class="card-body text-center">
+                <h5 class="card-title text-primary">Data Barang</h5>
+                <p class="card-text">Kelola data barang dagangan.</p>
+                <a href="barang/barang.php" class="btn btn-primary mt-auto">Kelola</a>
+             </div>
             </div>
         </div>
         <div class="col-md-4">
@@ -129,7 +134,7 @@ $nama = $_SESSION['nama_lengkap'];
                 <div class="card-body text-center">
                     <h5 class="card-title text-dark">Data Toko</h5>
                     <p class="card-text">Kelola informasi cabang toko.</p>
-                    <a href="toko.php" class="btn btn-dark">Kelola</a>
+                    <a href="toko/toko.php" class="btn btn-dark mt-auto">Kelola</a>
                 </div>
             </div>
         </div>
@@ -142,7 +147,7 @@ $nama = $_SESSION['nama_lengkap'];
                 <div class="card-body text-center">
                     <h5 class="card-title text-warning">Data Member</h5>
                     <p class="card-text">Kelola member dan data pelanggan.</p>
-                    <a href="member.php" class="btn btn-warning">Kelola</a>
+                    <a href="member/member.php" class="btn btn-warning mt-auto">Kelola</a>
                 </div>
             </div>
         </div>
@@ -151,13 +156,13 @@ $nama = $_SESSION['nama_lengkap'];
                 <div class="card-body text-center">
                     <h5 class="card-title text-info">Stok Toko</h5>
                     <p class="card-text">Lihat stok barang di toko kamu.</p>
-                    <a href="stok_toko.php" class="btn btn-info">Lihat</a>
+                    <a href="stok_toko.php" class="btn btn-info mt-auto">Lihat</a>
                 </div>
             </div>
         </div>
     <?php endif; ?>
 
-</div>
+    </div>
 
     <div class="text-center mt-5">
       <a href="logout.php" class="btn btn-outline-danger">Logout</a>

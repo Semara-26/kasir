@@ -1,6 +1,6 @@
 <?php
 session_start();
-include 'koneksi.php';
+include '../config/koneksi.php';
 
 // Pengecekan Akses
 if (!isset($_SESSION['id_pengguna']) || !in_array($_SESSION['role'], ['admin', 'manajer', 'kasir'])) {
@@ -24,7 +24,7 @@ $query = mysqli_query($conn, "SELECT * FROM member ORDER BY nama_member ASC");
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2>Kelola Member</h2>
         <div>
-            <a href="dashboard.php" class="btn btn-outline-secondary">← Kembali</a>
+            <a href="../dashboard.php" class="btn btn-outline-secondary">← Kembali</a>
             <a href="member_tambah.php" class="btn btn-primary ms-2">+ Tambah Member</a>
         </div>
     </div>

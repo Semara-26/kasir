@@ -1,6 +1,6 @@
 <?php
 session_start();
-include 'koneksi.php';
+include '../config/koneksi.php';
 
 if (!isset($_SESSION['id_toko'])) {
     header("Location: login.php");
@@ -39,13 +39,15 @@ if (isset($_POST['submit'])) {
                                     VALUES ($id_toko, $id_barang, $stok)
                                     ON DUPLICATE KEY UPDATE jumlah_stok = $stok");
 
-    if ($update_barang && $update_stok) {
-        $redirect = ($from_post === 'stok_toko') ? 'stok_toko.php' : 'barang.php';
-        header("Location: $redirect");
-        exit;
-    } else {
-        $error = "Gagal update data.";
-    }
+if ($update_barang && $update_stok) {
+    $_SESSION['pesan'] = [
+        'tipe' => 'success',
+        'teks' => 'Barang berhasil diperbarui.'
+    ];
+    $redirect = ($from_post === 'stok_toko') ? 'stok_toko.php' : 'barang.php';
+    header("Location: $redirect");
+    exit;
+}
 }
 ?>
 

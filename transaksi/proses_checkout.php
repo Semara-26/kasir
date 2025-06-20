@@ -1,6 +1,6 @@
 <?php
 session_start();
-include 'koneksi.php';
+include '../config/koneksi.php';
 
 // Pengecekan Akses & data
 if (!isset($_POST['checkout']) || empty($_SESSION['keranjang'])) {

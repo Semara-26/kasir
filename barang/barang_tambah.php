@@ -1,6 +1,6 @@
 <?php
 session_start();
-include 'koneksi.php';
+include '../config/koneksi.php';
 
 
 // Ambil ID toko dari sesi login (digunakan untuk stok awal)

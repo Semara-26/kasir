@@ -1,5 +1,5 @@
 <?php
-include 'koneksi.php';
+include '../config/koneksi.php';
 $result = mysqli_query($conn, "SELECT * FROM kategori");
 ?>
 
@@ -16,7 +16,7 @@ $result = mysqli_query($conn, "SELECT * FROM kategori");
   <div class="d-flex justify-content-between align-items-center mb-3">
     <h2>Data Kategori</h2>
     <div>
-      <a href="dashboard.php" class="btn btn-outline-secondary me-2">← Kembali</a>
+      <a href="../dashboard.php" class="btn btn-outline-secondary me-2">← Kembali</a>
       <a href="kategori_tambah.php" class="btn btn-primary">+ Tambah Kategori</a>
     </div>
   </div>

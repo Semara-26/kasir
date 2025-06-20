@@ -1,6 +1,6 @@
 <?php
 session_start();
-include 'koneksi.php';
+include '../config/koneksi.php';
 
 // Cek role admin atau manajer
 if (!isset($_SESSION['username']) || !in_array($_SESSION['role'], ['admin', 'manajer'])) {
@@ -27,7 +27,7 @@ while ($row = mysqli_fetch_assoc($result)) {
   <div class="container py-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
       <h2 class="mb-0">Data Toko</h2>
-      <a href="dashboard.php" class="btn btn-secondary">Kembali ke Dashboard</a>
+      <a href="../dashboard.php" class="btn btn-secondary">Kembali ke Dashboard</a>
     </div>
 
     <a href="tambah_toko.php" class="btn btn-primary mb-3">+ Tambah Toko</a>
@@ -54,7 +54,7 @@ while ($row = mysqli_fetch_assoc($result)) {
               <td><?= htmlspecialchars($row['tlp']) ?></td>
               <td><?= htmlspecialchars($row['nama_pemilik']) ?></td>
               <td>
-                <img src="upload/<?= htmlspecialchars($row['image']) ?>" width="80" alt="gambar toko">
+                <img src="../public/upload/<?= htmlspecialchars($row['image']) ?>" width="80" alt="gambar toko">
               </td>
               <td>
                 <a href="edit_toko.php?id=<?= $row['id_toko'] ?>" class="btn btn-sm btn-warning">Edit</a>
