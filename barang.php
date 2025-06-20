@@ -55,6 +55,15 @@ $query = mysqli_query($conn, "SELECT b.id_barang, b.nama_barang, b.harga_jual, s
         <a href="dashboard.php" class="btn btn-outline-secondary">← Kembali ke Dashboard</a>
     </div>
 
+    <?php if (isset($_SESSION['pesan'])): ?>
+        <div class="alert alert-<?= $_SESSION['pesan']['tipe']; ?> alert-dismissible fade show" role="alert">
+            <?= htmlspecialchars($_SESSION['pesan']['teks']); ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <?php unset($_SESSION['pesan']); ?>
+    <?php endif; ?>
+
+
     <!-- Filter Toko (admin/manajer) -->
     <?php if ($role !== 'kasir'): ?>
         <form method="GET" class="mb-3">

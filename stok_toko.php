@@ -88,6 +88,15 @@ $result_stok = mysqli_query($conn, $sql_stok);
             <span class="badge bg-warning text-dark">Stok < 20</span>
         </div>
 
+    <?php if (isset($_SESSION['pesan'])): ?>
+        <div class="alert alert-<?= $_SESSION['pesan']['tipe']; ?> alert-dismissible fade show" role="alert">
+            <?= htmlspecialchars($_SESSION['pesan']['teks']); ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <?php unset($_SESSION['pesan']); ?>
+    <?php endif; ?>
+
+
         <div class="card mb-4">
             <div class="card-body">
                 <form method="GET" action="stok_toko.php" class="row g-3 align-items-center">
@@ -154,7 +163,7 @@ $result_stok = mysqli_query($conn, $sql_stok);
                                     <?php if (in_array($user_role, ['admin', 'manajer'])): ?>
                                     <td>
                                        <a href="barang_edit.php?id=<?= $row['id_barang'] ?>&from=stok_toko" class="btn btn-sm btn-warning">Edit</a>
-                                        <a href="barang_hapus.php?id=<?= $row['id_barang'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Yakin hapus barang ini?')">Hapus</a>
+                                        <a href="barang_hapus.php?id=<?= $row['id_barang'] ?>&from=stok_toko" class="btn btn-sm btn-danger" onclick="return confirm('Yakin hapus barang ini?')">Hapus</a>
                                     </td>
                                     <?php endif; ?>
                                 </tr>
