@@ -2,26 +2,25 @@
 session_start();
 include 'koneksi.php';
 
-// --- Pengecekan Akses ---
-if (!isset($_SESSION['role']) || !in_array($_SESSION['role'], ['admin', 'manajer', 'kasir'])) {
-    header("Location: login.php");
-    exit;
-}
-if ($user_role === 'kasir' && $filter_toko_id != $user_id_toko) {
-    $filter_toko_id = $user_id_toko; // paksa filter ke toko kasir
-}
-
-
+// Ambil role & id toko dari session lebih awal
 $user_role = $_SESSION['role'];
 $user_id_toko = isset($_SESSION['id_toko']) ? intval($_SESSION['id_toko']) : 0;
 
+// --- Pengecekan Akses ---
+if (!isset($user_role) || !in_array($user_role, ['admin', 'manajer', 'kasir'])) {
+    header("Location: login.php");
+    exit;
+}
+
+// Ambil filter dari GET
 $filter_toko_id = isset($_GET['filter_toko_id']) ? intval($_GET['filter_toko_id']) : 0;
 $filter_nama_barang = isset($_GET['filter_nama_barang']) ? mysqli_real_escape_string($conn, $_GET['filter_nama_barang']) : '';
 
-
-if ($user_role === 'kasir') {
+// Paksa filter toko untuk kasir
+if ($user_role === 'kasir' && $filter_toko_id != $user_id_toko) {
     $filter_toko_id = $user_id_toko;
 }
+
 
 // --- Data Toko ---
 $sql_query_toko = "SELECT id_toko, nama_toko FROM toko";
