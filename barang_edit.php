@@ -1,5 +1,11 @@
 <?php
+session_start();
 include 'koneksi.php';
+
+if (!isset($_SESSION['id_toko'])) {
+    header("Location: login.php");
+    exit;
+}
 
 $id_toko = $_SESSION['id_toko'];
 $id_barang = $_GET['id'] ?? 0;
